@@ -1,0 +1,38 @@
+{
+    "name": "user-auth-server",
+    "version": "0.1.0",
+    "description": "User authentication microservice",
+    "private": true,
+    "type": "module",
+    "main": "user-server.js",
+    "scripts": {
+        "lint": "eslint",
+        "start": "cross-env REQ_LOG_FORMAT=common DEBUG=user-auth-server:* node ./user-server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "cross-env": "^7.0.3",
+        "debug": "^4.3.7",
+        "fs-extra": "^11.2.0",
+        "js-yaml": "^4.1.0",
+        "morgan": "~1.10.0",
+        "restify": "^11.1.0",
+        "rotating-file-stream": "^3.2.5",
+        "sequelize": "^6.37.4",
+        "sqlite3": "^5.1.7"
+    },
+    "devDependencies": {
+        "eslint": "^9.11.1",
+        "globals": "^15.9.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/dsoma/user-auth-server.git"
+    },
+    "keywords": [
+        "user",
+        "authentication"
+    ],
+    "author": "Deepak Somashekhara",
+    "homepage": "https://github.com/dsoma/user-auth-server#readme"
+}
