@@ -5,6 +5,7 @@ import { appRootDir } from './app-root-dir.js';
 import { createLogFileStream, log, logError } from './app-logger.js';
 import { normalizePort } from './app-utils.js';
 import { authorize } from './auth.js';
+import UsersSequelizedDB from './models/users-sequelize.js';
 
 const __dirname  = appRootDir;
 const APP_PORT   = 3001;
@@ -15,6 +16,8 @@ const server = restify.createServer({
     name: 'User-Auth-Service',
     version: '0.1.0'
 });
+
+export const userDB = new UsersSequelizedDB(process.env.DB_CONFIG);
 
 server.use(logger(LOG_FORMAT, { stream: createLogFileStream(__dirname) }));
 server.use(restify.plugins.authorizationParser());
@@ -28,86 +31,87 @@ server.listen(PORT, 'localhost', function () {
 
 // Routes
 
-server.post('/create-user', (req, res, next) => {
+server.post('/create-user', async (req, res) => {
     try {
-        // connect db
-        log('Creating user . . .');
+        const createdUser = await userDB.createUser(req);
         res.contentType = 'json';
-        res.send({ name: 'foo', password: 'bar' });
+        res.send(createdUser);
     } catch (e) {
         res.send(500, e);
         logError(`Creating user failed with error = ${e}`);
     }
-
-    next(false);
 });
 
-server.post('/find-or-create', (req, res, next) => {
+server.post('/find-or-create', async (req, res) => {
     try {
-        // connect db
-        log('Finding user . . .');
+        let user = await userDB.findOneUser(req.params?.username);
+        if (!user) {
+            user = await userDB.createUser(req);
+            if (!user) {
+                throw new Error(`User could not be created`);
+            }
+        }
         res.contentType = 'json';
-        res.send({ name: 'foo', password: 'bar' });
+        res.send(user);
     } catch (e) {
         res.send(500, e);
         logError(`Finding user failed with error = ${e}`);
     }
-
-    next(false);
 });
 
-server.get('/find/:username', (req, res, next) => {
+server.get('/find/:username', async (req, res) => {
     try {
-        // connect db
-        log('Finding user . . .');
+        let user = await userDB.findOneUser(req.params?.username);
+        if (!user) {
+            res.send(404, new Error(`No User found with username = ${req.params?.username}`));
+            return;
+        }
+
         res.contentType = 'json';
-        res.send({ name: req.params.username, password: 'bar' });
+        res.send(user);
     } catch (e) {
         res.send(500, e);
         logError(`Finding user failed with error = ${e}`);
     }
-
-    next(false);
 });
 
-server.get('/list', (req, res, next) => {
+server.get('/list', async (req, res) => {
     try {
-        // connect db
-        log('Finding all users . . .');
         res.contentType = 'json';
-        res.send([{ name: 'Foo', password: 'bar' }]);
+        res.send(await userDB.findAllUsers());
     } catch (e) {
         res.send(500, e);
         logError(`Finding all users failed with error = ${e}`);
     }
-
-    next(false);
 });
 
-server.post('/update/:username', (req, res, next) => {
+server.post('/update/:username', async (req, res) => {
     try {
-        // connect db
-        log('Updating user . . .');
+        const updatedUser = await userDB.updateUser(req);
+        if (!updatedUser) {
+            throw new Error(`Could not update user ${req.params?.username}`);
+        }
+
         res.contentType = 'json';
-        res.send({ name: req.params.username, password: 'bar' });
+        res.send(updatedUser);
     } catch (e) {
         res.send(500, e);
         logError(`Updating user failed with error = ${e}`);
     }
-
-    next(false);
 });
 
-server.del('/delete/:username', (req, res, next) => {
+server.del('/delete/:username', async (req, res) => {
     try {
-        // connect db
-        log('Deleting user . . .');
+        const isDeleted = await userDB.deleteUser(req.params?.username);
+        if (!isDeleted) {
+            res.send(404, new Error(`No User found with username = ${req.params?.username}`));
+            return;
+        }
+
         res.contentType = 'json';
-        res.send({ name: req.params.username, password: 'bar' });
+        res.send({});
     } catch (e) {
         res.send(500, e);
         logError(`Deleting user failed with error = ${e}`);
     }
-
-    next(false);
 });

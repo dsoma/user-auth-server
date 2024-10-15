@@ -152,7 +152,7 @@ const deleteUser = (username) => {
             return;
         }
 
-        console.log('Deleted user. Info = ' + Utils.inspect(obj));
+        console.log('Deleted user');
     });
 };
 

@@ -1,0 +1,7 @@
+
+dbName: users
+userName:
+password:
+params:
+    dialect: sqlite
+    storage: ./data/users-sequelize.sqlite3
