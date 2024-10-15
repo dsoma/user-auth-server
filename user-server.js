@@ -115,3 +115,31 @@ server.del('/delete/:username', async (req, res) => {
         logError(`Deleting user failed with error = ${e}`);
     }
 });
+
+server.post('/auth-check', async (req, res) => {
+    try {
+        const username = req.params?.username;
+        const pwd = req.params?.password;
+        const user = await userDB.getSqUser(username);
+
+        const result = {
+            check: false,
+            username,
+            message: ''
+        };
+
+        if (!user) {
+            result.message = 'Could not find user';
+        } else if (user.username === username && user.password === pwd) {
+            result.check = true;
+        } else {
+            result.message = 'Incorrect password';
+        }
+
+        res.contentType = 'json';
+        res.send(result);
+    } catch (e) {
+        res.send(500, e);
+        logError(`User auth check error = ${e}`);
+    }
+});

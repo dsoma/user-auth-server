@@ -156,6 +156,22 @@ const deleteUser = (username) => {
     });
 };
 
+const authCheck = (username, password, cmd) => {
+    const data = {
+        username,
+        password
+    };
+
+    client(program).post(`/auth-check`, data, (err, req, res, obj) => {
+        if (err) {
+            console.error(err.stack);
+            return;
+        }
+
+        console.log(obj);
+    });
+};
+
 program
     .option('-p, --port <port>', 'Port number for user auth service, if using localhost')
     .option('-H, --host <host>', 'Port number for user auth service, if using localhost')
@@ -205,5 +221,10 @@ program
     .command('delete <username>')
     .description('Deleting user')
     .action(deleteUser);
+
+program
+    .command('auth-check <username> <password>')
+    .description('Check user name and password')
+    .action(authCheck);
 
 program.parse(process.argv);

@@ -21,6 +21,11 @@ export default class UsersSequelizedDB {
         return user;
     }
 
+    async getSqUser(username) {
+        await this._connect();
+        return await SQUser.findOne({ where: { username } });
+    }
+
     async createUser(req) {
         await this._connect();
         const user = UsersSequelizedDB.getUserFromRequest(req);
