@@ -1,6 +1,6 @@
 
 const apiKeys = [
-    { user: 'them', key: '' }
+    { user: 'them', key: 'd950b890-a8fc-466b-8f47-b8b5aaf7c80c' }
 ];
 
 export function authorize(req, res, next) {
