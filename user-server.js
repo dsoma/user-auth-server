@@ -1,5 +1,6 @@
 import restify from 'restify';
 import { default as logger } from 'morgan';
+import { default as bcrypt } from 'bcrypt';
 
 import { appRootDir } from './app-root-dir.js';
 import { createLogFileStream, log, logError } from './app-logger.js';
@@ -128,12 +129,18 @@ server.post('/auth-check', async (req, res) => {
             message: ''
         };
 
+        let pwCheck = false;
+
         if (!user) {
-            result.message = 'Could not find user';
-        } else if (user.username === username && user.password === pwd) {
-            result.check = true;
-        } else {
-            result.message = 'Incorrect password';
+            result.message = 'Incorrect username';
+        } else if (user.username === username) {
+            pwCheck = await bcrypt.compare(pwd, user.password);
+
+            if (pwCheck) {
+                result.check = true;
+            } else {
+                result.message = 'Incorrect password';
+            }
         }
 
         res.contentType = 'json';
