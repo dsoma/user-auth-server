@@ -2,6 +2,7 @@
 import * as Utils from 'util';
 import { program } from 'commander';
 import { default as restify } from 'restify-clients';
+import { default as bcrypt } from 'bcrypt';
 
 let clientPort;
 let clientHost;
@@ -10,6 +11,13 @@ let clientVersion = '*';
 
 const authId = 'them';
 const authCode = 'd950b890-a8fc-466b-8f47-b8b5aaf7c80c';
+const saltRounds = 10;
+
+async function hashpass(password) {
+    let salt = await bcrypt.genSalt(saltRounds);
+    let hashed = await bcrypt.hash(password, salt);
+    return hashed;
+}
 
 // Create a client
 const client = (program) => {
@@ -46,10 +54,10 @@ const client = (program) => {
     return client;
 };
 
-const addUser = (username, cmd) => {
+const addUser = async (username, cmd) => {
     const data = {
         username,
-        password: cmd.password,
+        password: await hashpass(cmd.password),
         familyName: cmd.familyName,
         givenName: cmd.givenName,
         middleName: cmd.middleName,
@@ -71,10 +79,10 @@ const addUser = (username, cmd) => {
     });
 };
 
-const findOrCreateUser = (username, cmd) => {
+const findOrCreateUser = async (username, cmd) => {
     const data = {
         username,
-        password: cmd.password,
+        password: await hashpass(cmd.password),
         familyName: cmd.familyName,
         givenName: cmd.givenName,
         middleName: cmd.middleName,
@@ -119,10 +127,10 @@ const listAllUsers = () => {
     });
 };
 
-const updateUser = (username, cmd) => {
+const updateUser = async (username, cmd) => {
     const data = {
         username,
-        password: cmd.password,
+        password: await hashpass(cmd.password),
         familyName: cmd.familyName,
         givenName: cmd.givenName,
         middleName: cmd.middleName,

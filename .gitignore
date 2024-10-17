@@ -2,3 +2,4 @@
 .npm
 /log/
 /data/
+users-sequelize.sqlite3
