@@ -1,0 +1,7 @@
+dbName: users
+userName: users
+password: users
+params:
+    dialect: mysql
+    host: localhost
+    port: 3306
