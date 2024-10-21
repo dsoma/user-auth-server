@@ -3,3 +3,4 @@
 /log/
 /data/
 users-sequelize.sqlite3
+.DS_Store

@@ -12,6 +12,7 @@ const __dirname  = appRootDir;
 const APP_PORT   = 3001;
 const PORT       = normalizePort(process.env.PORT || APP_PORT);
 const LOG_FORMAT = process.env.REQ_LOG_FORMAT || 'dev';
+const HOST       = process.env.HOST || 'localhost';
 
 const server = restify.createServer({
     name: 'User-Auth-Service',
@@ -26,7 +27,7 @@ server.use(authorize);
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser({ mapParams: true }));
 
-server.listen(PORT, 'localhost', function () {
+server.listen(PORT, HOST, function () {
     log(server.name + ' listening at ' + server.url);
 });
 
