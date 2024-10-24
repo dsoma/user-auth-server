@@ -1,7 +1,7 @@
 dbName: users
-userName: users
-password: users
+userName: user
+password: user
 params:
     dialect: mysql
-    host: localhost
+    host: db-user-auth
     port: 3306
