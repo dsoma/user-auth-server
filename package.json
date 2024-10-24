@@ -8,7 +8,25 @@
     "scripts": {
         "lint": "eslint",
         "start": "cross-env REQ_LOG_FORMAT=common DEBUG=user-auth-server:* node ./user-server.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "docker-build": "nerdctl build -t svc-user-auth .",
+        "build-authnet": "nerdctl network create --driver=bridge authnet",
+        "remove-authnet": "nerdctl network rm authnet",
+        "build-frontnet": "nerdctl network create --driver=bridge frontnet",
+        "prebuild-db": "mkdir user-auth-data",
+        "build-db-user-auth": "nerdctl run --detach --name db-user-auth --network authnet -v /Users/Shared/mysql-db-data:/var/lib/mysql:rw --env MYSQL_USER=user --env MYSQL_PASSWORD=user --env MYSQL_DATABASE=users --env MYSQL_ROOT_PASSWORD=mysql_1234_Mrum --env DATABASE_HOST=db-userauth mysql:9.0 --bind_address=0.0.0.0",
+        "start-db-user-auth": "nerdctl start db-user-auth",
+        "stop-db-user-auth": "nerdctl stop db-user-auth",
+        "package-user-auth": "npm run docker-build",
+        "build-user-auth": "nerdctl run --detach --name svc-user-auth --network authnet --network frontnet svc-user-auth",
+        "start-user-auth": "nerdctl start svc-user-auth",
+        "stop-user-auth": "nerdctl stop svc-user-auth",
+        "start-service": "npm run start-db-user-auth && npm run start-user-auth",
+        "stop-service": "npm run stop-db-user-auth && npm run stop-user-auth",
+        "remove-db-user-auth": "nerdctl rm db-user-auth",
+        "remove-user-auth": "nerdctl rm svc-user-auth",
+        "deploy": "npm run build-frontnet; npm run build-authnet && npm run build-db-user-auth && npm run package-user-auth && npm run build-user-auth",
+        "purge": "npm run stop-service && npm run remove-user-auth && npm run remove-db-user-auth && npm run remove-authnet"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
