@@ -14,7 +14,7 @@
         "remove-authnet": "nerdctl network rm authnet",
         "build-frontnet": "nerdctl network create --driver=bridge frontnet",
         "prebuild-db": "mkdir user-auth-data",
-        "build-db-user-auth": "nerdctl run --detach --name db-user-auth --network authnet -v /Users/Shared/mysql-db-data:/var/lib/mysql:rw --env MYSQL_USER=user --env MYSQL_PASSWORD=user --env MYSQL_DATABASE=users --env MYSQL_ROOT_PASSWORD=mysql_1234_Mrum --env DATABASE_HOST=db-userauth mysql:9.0 --bind_address=0.0.0.0",
+        "build-db-user-auth": "nerdctl run --detach --name db-user-auth --network authnet -v /Users/Shared/mysql-db-data:/var/lib/mysql:rw --env MYSQL_USER=user --env MYSQL_PASSWORD=user --env MYSQL_DATABASE=users --env MYSQL_ROOT_PASSWORD=mysql_1234_Mrum --env DATABASE_HOST=db-user-auth mysql:9.0 --bind_address=0.0.0.0",
         "start-db-user-auth": "nerdctl start db-user-auth",
         "stop-db-user-auth": "nerdctl stop db-user-auth",
         "package-user-auth": "npm run docker-build",

@@ -1,6 +1,6 @@
 FROM node:20
 
-RUN apt-get update -y && apt-get upgrade -y && apt-get -y install curl build-essential git
+RUN apt-get update -y && apt-get upgrade -y && apt-get -y install curl build-essential git iputils-ping
 
 ENV REQ_LOG_FORMAT="common"
 ENV DEBUG="user-auth-server:*"
